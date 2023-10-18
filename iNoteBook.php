@@ -1,6 +1,9 @@
 <!-- INSERT INTO `Notes` (`Sno`, `Title`, `Description`, `Time`) VALUES (NULL, 'Buy books', 'Go to market and buy some books for reading', current_timestamp()); -->
 
 <?php
+
+//connecting to the db
+$insert = false;
 $servername = "localhost";
 $username = "root";
 $password = "";
@@ -10,6 +13,16 @@ if (!$conn) {
     die("Sorry ! Connection cannot be established due to : " . mysqli_connect_error());
 }
 
+//Inserting records in table
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $title = $_POST['title'];
+    $desc = $_POST['desc'];
+    $sql = "INSERT INTO `Notes`(`Title`, `Description`) VALUES ('$title', '$desc')";
+    $result = mysqli_query($conn, $sql);
+    if ($result) {
+        $insert = true;
+    }
+}
 ?>
 <!doctype html>
 <html lang="en">
@@ -28,10 +41,18 @@ if (!$conn) {
             <img src="logo.png" alt="iNoteBook" width="225">
         </div>
     </nav>
+    <?php
+    if ($insert) {
+        echo "<div class='alert alert-success alert-dismissible fade show' role='alert'>
+        <strong>Success!</strong> Your note has been inserted.
+        <button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close'></button>
+      </div>";
+    }
+    ?>
 
     <div class="container mt-4">
         <h2>Add a Note</h2>
-        <form action="iNoteBook.php" method="post">
+        <form action="/project-CRUD(inotes)/iNoteBook.php" method="post">
             <div class="mb-3 mt-4">
                 <label for="title" class="form-label">Title : </label>
                 <input type="text" class="form-control" id="title" name="title">
@@ -53,7 +74,7 @@ if (!$conn) {
                     <th scope="col">Actions</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody class="table-group-divider">
                 <?php
                 $sql = "SELECT * FROM `Notes`";
                 $result = mysqli_query($conn, $sql);
@@ -69,9 +90,9 @@ if (!$conn) {
             </tbody>
         </table>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
-        crossorigin="anonymous"></script>
+    <script src=" https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous">
+        </script>
 </body>
 
 </html>
